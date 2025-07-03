@@ -2,12 +2,6 @@
 
 This project is a Streamlit web application designed to help users track their expenses and plan their budget. It offers two ways to input expense data: by uploading a CSV file or by entering data manually. The application also includes a feature for expense forecasting, leveraging AI to provide insights into future spending.
 
-## Features
-
--   **Data Input:** Users can either upload a CSV file with their expense data or enter it manually through an interactive table.
--   **Data Preview:** For CSV uploads, a preview of the data is displayed.
--   **Data Validation:** The application validates the manually entered data to ensure correctness.
--   **Expense Forecasting:** (Coming Soon) AI-powered forecasting to predict future expenses.
 
 ## Requirements
 
