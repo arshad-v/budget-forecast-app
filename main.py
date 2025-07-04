@@ -1,25 +1,47 @@
 import pandas as pd
 import streamlit as st
 import datetime
-import google.generativeai as genai
+import requests
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Configure the Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Load API key
+API_KEY = os.getenv("GEMINI_API_KEY")
 
+# Define Gemini endpoint
+GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
+# Function to call Gemini API
 def get_gemini_response(input_text):
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content(input_text)
-    return response.text
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": input_text
+                    }
+                ]
+            }
+        ]
+    }
+    response = requests.post(GEMINI_URL, headers=headers, json=data)
+    
+    if response.status_code == 200:
+        result = response.json()
+        return result['candidates'][0]['content']['parts'][0]['text']
+    else:
+        return f"API Error: {response.status_code} - {response.text}"
+
+
+
 
 st.title("AI Budget Planner with Expense Forecasting ")
-
-
-
 input_mode = st.radio("Choose input method:", ["Upload CSV", "Enter Data Manually"])
 
 if input_mode == "Upload CSV":
