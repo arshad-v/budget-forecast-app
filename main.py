@@ -1,11 +1,25 @@
 import pandas as pd
 import streamlit as st
 import datetime
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Configure the Gemini API
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+def get_gemini_response(input_text):
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content(input_text)
+    return response.text
 
 st.title("AI Budget Planner with Expense Forecasting ")
 
 
-# Choose input method
+
 input_mode = st.radio("Choose input method:", ["Upload CSV", "Enter Data Manually"])
 
 if input_mode == "Upload CSV":
@@ -17,7 +31,12 @@ if input_mode == "Upload CSV":
         st.subheader("🔍 Preview of CSV")
         st.dataframe(df)
 
-
+        if st.button("Analyze Expenses"):
+            st.subheader("AI Budget Analysis")
+            with st.spinner("Analyzing..."):
+                prompt = f"Analyze the following expense data (make sure in Indian rupees). Provide a detailed budget forecast, identify spending trends, and offer actionable suggestions for improvement. Present the analysis in a clear, structured format:\n{df.to_string()}"
+                response = get_gemini_response(prompt)
+                st.write(response)
 
 else:
     st.subheader("📝 Enter Expenses (Add/Delete Rows Below)")
@@ -36,17 +55,15 @@ else:
         key="expense_editor"
     )
 
-    # Submit button
+    
     if st.button("Submit Expenses"):
         # Clean and validate
         try:
-            edited_df["Date"] = pd.to_datetime(edited_df["Date"])
-            edited_df["Amount"] = edited_df["Amount"].astype(float)
-            
-
-            st.success("✅ Entries Submitted Successfully!")
-            st.dataframe(edited_df)
-            
+            st.subheader("AI Budget Analysis")
+            with st.spinner("Analyzing..."):
+                prompt = f"Analyze the following expense data (in Indian rupees). Provide a detailed budget forecast, identify spending trends, and offer actionable suggestions for improvement. Present the analysis in a clear, structured format:\n{edited_df.to_string()}"
+                response = get_gemini_response(prompt)
+                st.write(response)
 
         except Exception as e:
             st.error(f"❌ Error processing data: {e}")
