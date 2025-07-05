@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import datetime
-from dotenv import load_dotenv
 from gemini_config import GeminiAPI
 
 
@@ -54,11 +53,4 @@ class BudgetAnalyzerApp:
             except Exception as e:
                 st.error(f"❌ Error processing data: {e}")
 
-    def run(self):
-        st.title("AI Budget Planner with Expense Forecasting")
-        input_mode = st.radio("Choose input method:", ["Upload CSV", "Enter Data Manually"])
-
-        if input_mode == "Upload CSV":
-            self.handle_csv_input()
-        else:
-            self.handle_manual_input()
+                

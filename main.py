@@ -1,10 +1,7 @@
-from BudgetApp import BudgetAnalyzerApp
+from streamlit_ui import run
 
 def main():
-    app = BudgetAnalyzerApp()
-    app.run()
+    run()
 
 if __name__ == "__main__":
     main()
-
-
